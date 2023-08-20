@@ -9,6 +9,9 @@ import {
   Center,
   TextInput,
   rem,
+  Modal,
+  Button,
+  useMantineTheme,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import {
@@ -115,10 +118,13 @@ function sortData(
 }
 
 export function TableSort({ data }: TableSortProps) {
+  const theme = useMantineTheme();
   const [search, setSearch] = useState("");
   const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
+  const [errorModalOpened, setErrorModalOpened] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -159,9 +165,11 @@ export function TableSort({ data }: TableSortProps) {
           loan_duration_days: 7,
         },
       });
-     
+
       window.location.reload();
     } catch (error) {
+      setErrorMessage("You Must Return The Book Before Borrow New One");
+      setErrorModalOpened(true);
       console.error("Error borrowing book:", error);
     }
   };
@@ -181,6 +189,24 @@ export function TableSort({ data }: TableSortProps) {
 
   return (
     <ScrollArea>
+      <Modal
+        opened={errorModalOpened}
+        onClose={() => setErrorModalOpened(false)}
+        title="Error"
+        size="sm"
+        centered // Center the modal
+      >
+        <div>{errorMessage}</div>
+        <div style={{ marginTop: theme.spacing.sm }}>
+          <Button
+            fullWidth
+            color="red"
+            onClick={() => setErrorModalOpened(false)}
+          >
+            Close
+          </Button>
+        </div>
+      </Modal>
       <TextInput
         placeholder="Search by any field"
         mb="md"

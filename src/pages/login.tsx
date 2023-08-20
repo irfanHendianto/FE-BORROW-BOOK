@@ -6,16 +6,19 @@ import {
   Paper,
   Text,
   useMantineTheme,
+  Modal,
 } from "@mantine/core";
 import styles from "../styles/Login.module.css";
 import Link from "next/link";
 import { apiRequest } from "@/utils/apiHelpers";
-import { useRouter } from 'next/router'; 
+import { useRouter } from "next/router";
 
 export default function Login() {
   const theme = useMantineTheme();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorModalOpened, setErrorModalOpened] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -29,24 +32,45 @@ export default function Login() {
         },
       });
       localStorage.setItem("token", res.data.token);
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (error) {
+      console.log("🚀 ~ file: login.tsx:37 ~ handleLogin ~ error:", error);
+      setErrorMessage("There was an error while trying to log in.");
+      setErrorModalOpened(true);
       console.error("Login error:", error);
     }
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      console.log("asdasd")
-      const token = localStorage.getItem('token');
+    if (typeof window !== "undefined") {
+      console.log("asdasd");
+      const token = localStorage.getItem("token");
       if (token) {
-        router.push('/dashboard');
+        router.push("/dashboard");
       }
     }
   }, [router]);
 
   return (
     <Container size="xs" className={styles.container}>
+       <Modal
+        opened={errorModalOpened}
+        onClose={() => setErrorModalOpened(false)}
+        title="Login Error"
+        size="sm"
+        centered // Center the modal
+      >
+        <div>{errorMessage}</div>
+        <div style={{ marginTop: theme.spacing.sm }}>
+          <Button
+            fullWidth
+            color="red"
+            onClick={() => setErrorModalOpened(false)}
+          >
+            Close
+          </Button>
+        </div>
+      </Modal>
       <Paper p="md" shadow="xs" className={styles.paper}>
         <Text
           align="center"
