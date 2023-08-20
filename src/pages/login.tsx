@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   TextInput,
@@ -35,6 +35,16 @@ export default function Login() {
     }
   };
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      console.log("asdasd")
+      const token = localStorage.getItem('token');
+      if (token) {
+        router.push('/dashboard');
+      }
+    }
+  }, [router]);
+
   return (
     <Container size="xs" className={styles.container}>
       <Paper p="md" shadow="xs" className={styles.paper}>
@@ -69,20 +79,4 @@ export default function Login() {
       </Paper>
     </Container>
   );
-}
-export async function getServerSideProps() {
-  const token = localStorage.getItem('token'); 
-
-  if (token) {
-    return {
-      redirect: {
-        destination: '/dashboard',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
 }

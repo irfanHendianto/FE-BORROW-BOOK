@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -36,11 +37,14 @@ export default function Register() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      router.push('/dashboard');
+    if (typeof window !== 'undefined') {
+      console.log("asdasd")
+      const token = localStorage.getItem('token');
+      if (token) {
+        router.push('/dashboard');
+      }
     }
-  }, []);
+  }, [router]);
 
   return (
     <Container size="xs" className={styles.container}>

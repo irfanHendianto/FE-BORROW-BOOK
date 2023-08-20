@@ -11,6 +11,7 @@ import {
   rem,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import router from "next/router";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -85,6 +86,11 @@ export function HeaderMegaMenu() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const { classes, theme } = useStyles();
+  
+  const handleLogout = () => {
+    localStorage.removeItem('token'); 
+    router.push('/'); 
+  };
 
   return (
     <Box pb={120}>
@@ -113,7 +119,7 @@ export function HeaderMegaMenu() {
           </Group>
 
           <Group className={classes.hiddenMobile}>
-            <Button variant="default">Log out</Button>
+            <Button variant="default" onClick={handleLogout}>Log out</Button>
           </Group>
 
           <Burger
@@ -161,7 +167,7 @@ export function HeaderMegaMenu() {
           />
 
           <Group position="center" grow pb="xl" px="md">
-            <Button variant="default">Log out</Button>
+            <Button variant="default" onClick={handleLogout} >Log out</Button>
           </Group>
         </ScrollArea>
       </Drawer>
